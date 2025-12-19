@@ -29,6 +29,7 @@ bool bmp_ok;
 unsigned int pluv=0;
 char lat[32], lng[32];
 char Date[32], Time[32];
+int dia_anterior = 99; 
 
 const int oneWireBus = 4; //DS18B20 conectado ao GPIO4 
 OneWire oneWire(oneWireBus);
@@ -222,8 +223,17 @@ float le_radiacao(){
 /**************************************************************************************************************************************************/
 
 void loop() {
+ 
   le_gps();
-  
+
+  int dia_atual = gps.date.day(); 
+    if (dia_anterior != dia_atual) {
+        pluv = 0;                     // zera a chuva para o dia seguinte
+        dia_anterior = dia_atual;     
+    }
+
+
+
   float temperatura=le_temperatura();
   float umidade=le_umidade();
   float pressao=le_pressao();
