@@ -61,13 +61,14 @@ def parse_line(line: str):
     temp_c     = to_float(tail[2], "temperatura")
     ur         = to_float(tail[3], "umidade_relativa")
     press      = to_float(tail[4], "pressao")
-    rad        = to_float(tail[5], "radiacao")
-    vento_int  = to_float(tail[6], "vento_intensidade")
-    vento_dir  = to_float(tail[7], "vento_direcao")
+    pluv       = to_float(tail[5], "precipitacao")
+    rad        = to_float(tail[6], "radiacao")
+    vento_int  = to_float(tail[7], "vento_intensidade")
+    vento_dir  = to_float(tail[8], "vento_direcao")
 
     # Se houver extras, ignoramos mas avisamos uma vez por linha
-    if len(tail) > 8:
-        extras = " ".join(tail[8:])
+    if len(tail) > 9:
+        extras = " ".join(tail[9:])
         sys.stderr.write(f"[INFO] ignorando tokens extras: {extras}\n")
 
     return {
@@ -78,6 +79,7 @@ def parse_line(line: str):
         "temp_c": temp_c,
         "ur": ur,
         "press": press,
+        "pluv":pluv,
         "rad": rad,
         "vento_int": vento_int,
         "vento_dir": vento_dir,
@@ -93,7 +95,7 @@ def ensure_writer(base_dir, ymd):
     if not file_exists or os.path.getsize(filepath) == 0:
         w.writerow([
             "datetime_iso", "lat", "lon",
-            "temp_C", "umid_rel_%", "press", "radiacao",
+            "temp_C", "umid_rel_%", "press_pa", "precipitacao", "radiacao",
             "vento_intensidade", "vento_direcao",
         ])
     return f, w, filepath
@@ -194,6 +196,7 @@ def main():
                 f"{rec['temp_c']:.2f}",
                 f"{rec['ur']:.2f}",
                 f"{rec['press']:.2f}",
+                f"{rec['pluv']:.2f}",
                 f"{rec['rad']:.2f}",
                 f"{rec['vento_int']:.2f}",
                 f"{rec['vento_dir']:.2f}",
